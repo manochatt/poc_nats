@@ -40,7 +40,6 @@ func main() {
 	data := func() []kafka.Message {
 		products := []domain.LineTemplate{
 			{
-				ID:   primitive.NewObjectID(),
 				ToID: primitive.NewObjectID(),
 				Messages: []domain.Message{
 					{
@@ -50,7 +49,6 @@ func main() {
 				},
 			},
 			{
-				ID:   primitive.NewObjectID(),
 				ToID: primitive.NewObjectID(),
 				Messages: []domain.Message{
 					{
@@ -60,7 +58,6 @@ func main() {
 				},
 			},
 			{
-				ID:   primitive.NewObjectID(),
 				ToID: primitive.NewObjectID(),
 				Messages: []domain.Message{
 					{

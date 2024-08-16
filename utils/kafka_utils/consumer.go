@@ -13,6 +13,7 @@ import (
 	"github.com/manochatt/line-noti/mongo"
 	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TopicSubscribe(env *bootstrap.Env, db mongo.Database) {
@@ -71,6 +72,8 @@ func LineTemplateHandler(db mongo.Database, lineTemplateCh chan domain.LineTempl
 		if lineTemplates != nil {
 			continue
 		}
+
+		lc.ID = primitive.NewObjectID()
 
 		_, err = collection.InsertOne(c, &lc)
 		if err != nil {

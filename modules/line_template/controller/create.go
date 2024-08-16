@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,15 +11,25 @@ import (
 )
 
 func (lc *LineTemplateController) Create(c *gin.Context) {
-	var lineTemplate domain.LineTemplate
+	var lineTemplateDTO domain.LineTemplateDTO
 
-	err := c.ShouldBind(&lineTemplate)
+	err := c.ShouldBind(&lineTemplateDTO)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	lineTemplate.ID = primitive.NewObjectID()
+	var messages []map[string]interface{}
+	err = json.Unmarshal([]byte(lineTemplateDTO.Messages), &messages)
+	if err != nil {
+		log.Fatal("Error cannot unmarshal messages:", err)
+	}
+
+	lineTemplate := domain.LineTemplate{
+		ID:        primitive.NewObjectID(),
+		ProjectID: lineTemplateDTO.ProjectID,
+		Messages:  messages,
+	}
 
 	err = lc.LineTemplateUsecase.Create(c, &lineTemplate)
 	if err != nil {

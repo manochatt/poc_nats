@@ -10,15 +10,21 @@ const (
 	CollectionLineTemplate = "line_template"
 )
 
-type Message struct {
-	Type    string `bson:"type" json:"type"`
-	AltText string `bson:"altText" json:"altText"`
+type LineTemplateDTO struct {
+	ID        primitive.ObjectID `bson:"_id" json:"-"`
+	ProjectID primitive.ObjectID `bson:"projectID" json:"projectID"`
+	Messages  string             `bson:"messages" json:"messages"`
 }
 
 type LineTemplate struct {
-	ID       primitive.ObjectID `bson:"_id" json:"-"`
-	ToID     primitive.ObjectID `bson:"toID" json:"toID"`
-	Messages []Message          `bson:"messages" json:"messages"`
+	ID        primitive.ObjectID       `bson:"_id"`
+	ProjectID primitive.ObjectID       `bson:"projectID"`
+	Messages  []map[string]interface{} `bson:"messages"`
+}
+
+type LineMessage struct {
+	ToID     primitive.ObjectID       `json:"toID"`
+	Messages []map[string]interface{} `json:"messages"`
 }
 
 type LineTemplateRepository interface {

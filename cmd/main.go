@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/bootstrap"
 	"github.com/manochatt/line-noti/modules"
-	"github.com/manochatt/line-noti/utils/kafka_utils"
 )
 
 func main() {
@@ -17,7 +16,7 @@ func main() {
 	db := app.Mongo.Database(env.DBName)
 	defer app.CloseDBConnection()
 
-	go kafka_utils.TopicSubscribe(env, db)
+	// go kafka_utils.TopicSubscribe(env, db)
 
 	timeOut := time.Duration(env.ContextTimeout) * time.Second
 
