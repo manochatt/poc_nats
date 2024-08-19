@@ -1,4 +1,4 @@
-package demo
+package nats_utils
 
 import (
 	"context"

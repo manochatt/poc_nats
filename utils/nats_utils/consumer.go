@@ -1,4 +1,4 @@
-package main
+package nats_utils
 
 import (
 	"context"
@@ -8,30 +8,29 @@ import (
 	"log"
 	"time"
 
-	"github.com/manochatt/line-noti/demo"
 	"github.com/nats-io/nats.go"
 )
 
-func main() {
+func Consumer() {
 	ctx := context.Background()
 
-	jsCtx, err := demo.InitialNatServer()
+	jsCtx, err := InitialNatServer()
 	if err != nil {
 		log.Fatal("Error", err)
 	}
 
-	_, err = createConsumer(ctx, jsCtx, "demo_group", "demo")
+	_, err = CreateConsumer(ctx, jsCtx, "demo_group", "demo")
 	if err != nil {
 		log.Fatal("Error", err)
 	}
 
 	defer func() {
-		if err := deleteConsumer(ctx, jsCtx, "demo_group", "demo"); err != nil {
+		if err := DeleteConsumer(ctx, jsCtx, "demo_group", "demo"); err != nil {
 			log.Fatal("Error", err)
 		}
 	}()
 
-	pullSub, err := subscribe(ctx, jsCtx, "demo.*", "demo_group", "demo")
+	pullSub, err := Subscribe(ctx, jsCtx, "demo.*", "demo_group", "demo")
 	if err != nil {
 		log.Fatal("Error", err)
 	}
@@ -40,11 +39,11 @@ func main() {
 
 	go func() {
 		for {
-			fetchCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
-			msg, err := fetchOne(fetchCtx, pullSub)
+			fetchCtx, cancel := context.WithTimeout(ctx, 5*time.Minute)
+			msg, err := FetchOne(fetchCtx, pullSub)
 			cancel()
 			if err != nil {
-				log.Printf("No new message in recent 5 seconds: %s", err)
+				log.Printf("⌛️ No new message in recent 5 minutes: %s", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
@@ -73,7 +72,7 @@ func main() {
 	}
 }
 
-func createConsumer(ctx context.Context, jsCtx nats.JetStreamContext, consumerGroupName, streamName string) (*nats.ConsumerInfo, error) {
+func CreateConsumer(ctx context.Context, jsCtx nats.JetStreamContext, consumerGroupName, streamName string) (*nats.ConsumerInfo, error) {
 	consumer, err := jsCtx.AddConsumer(streamName, &nats.ConsumerConfig{
 		Durable:       consumerGroupName,      // durable name is the same as consumer group name
 		DeliverPolicy: nats.DeliverAllPolicy,  // deliver all messages, even if they were sent before the consumer was created
@@ -89,7 +88,7 @@ func createConsumer(ctx context.Context, jsCtx nats.JetStreamContext, consumerGr
 	return consumer, nil
 }
 
-func deleteConsumer(ctx context.Context, jsCtx nats.JetStreamContext, consumerGroupName, streamName string) error {
+func DeleteConsumer(ctx context.Context, jsCtx nats.JetStreamContext, consumerGroupName, streamName string) error {
 	err := jsCtx.DeleteConsumer(streamName, consumerGroupName, nats.Context(ctx))
 	if err != nil {
 		return fmt.Errorf("delete consumer: %w", err)
@@ -98,7 +97,7 @@ func deleteConsumer(ctx context.Context, jsCtx nats.JetStreamContext, consumerGr
 	return nil
 }
 
-func subscribe(ctx context.Context, js nats.JetStreamContext, subject, consumerGroupName, streamName string) (*nats.Subscription, error) {
+func Subscribe(ctx context.Context, js nats.JetStreamContext, subject, consumerGroupName, streamName string) (*nats.Subscription, error) {
 	pullSub, err := js.PullSubscribe(
 		subject,
 		consumerGroupName,
@@ -113,7 +112,7 @@ func subscribe(ctx context.Context, js nats.JetStreamContext, subject, consumerG
 	return pullSub, nil
 }
 
-func fetchOne(ctx context.Context, pullSub *nats.Subscription) (*nats.Msg, error) {
+func FetchOne(ctx context.Context, pullSub *nats.Subscription) (*nats.Msg, error) {
 	msgs, err := pullSub.Fetch(1, nats.Context(ctx))
 	if err != nil {
 		return nil, fmt.Errorf("fetch: %w", err)

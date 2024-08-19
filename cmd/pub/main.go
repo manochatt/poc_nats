@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/manochatt/line-noti/demo"
+	"github.com/manochatt/line-noti/utils/nats_utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Demo struct {
 	ID         primitive.ObjectID
 	Message    string
-	SuccessFul bool
+	Successful bool
 }
 
 func main() {
-	jsCtx, err := demo.InitialNatServer()
+	jsCtx, err := nats_utils.InitialNatServer()
 	if err != nil {
 		log.Fatal("Error", err)
 	}
@@ -24,7 +24,7 @@ func main() {
 	demo := Demo{
 		ID:         primitive.NewObjectID(),
 		Message:    "test",
-		SuccessFul: true,
+		Successful: false,
 	}
 
 	demoData, err := json.Marshal(demo)
