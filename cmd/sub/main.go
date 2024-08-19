@@ -8,14 +8,14 @@ import (
 	"log"
 	"time"
 
-	"github.com/manochatt/line-noti/demo"
+	"github.com/manochatt/line-noti/utils/nats_utils"
 	"github.com/nats-io/nats.go"
 )
 
 func main() {
 	ctx := context.Background()
 
-	jsCtx, err := demo.InitialNatServer()
+	jsCtx, err := nats_utils.InitialNatServer()
 	if err != nil {
 		log.Fatal("Error", err)
 	}

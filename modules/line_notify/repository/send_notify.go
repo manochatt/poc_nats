@@ -20,7 +20,7 @@ func (lnr *lineNotifyRepository) SendNotify(c context.Context, payload *bytes.Bu
 
 	// Set the Content-Type header to application/json
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer r5AGBIGYqxNudoJunkfLVZVQzGiZLeqnlgbKzHsHAHThZCDyQvfT/wsYWZxdDrddN8uD5Q1HkvKQknSbzONIXQAKRgGxJXCnomOq5Yvc3OE85L7xg4pgPvdrmZcFAi7yhmAU2MdklOzSfiJxYKEa5gdB04t89/1O/w1cDnyilFU=")
+	// req.Header.Set("Authorization", "Bearer r5AGBIGYqxNudoJunkfLVZVQzGiZLeqnlgbKzHsHAHThZCDyQvfT/wsYWZxdDrddN8uD5Q1HkvKQknSbzONIXQAKRgGxJXCnomOq5Yvc3OE85L7xg4pgPvdrmZcFAi7yhmAU2MdklOzSfiJxYKEa5gdB04t89/1O/w1cDnyilFU=")
 
 	// Create an HTTP client with a timeout
 	client := &http.Client{Timeout: 10 * time.Second}

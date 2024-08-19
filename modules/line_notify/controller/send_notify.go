@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/domain"
@@ -24,7 +25,14 @@ func (lnc *LineNotifyController) SendNotify(c *gin.Context) {
 		log.Fatal("failed to marshal payload:", err)
 	}
 
-	err = lnc.LineNotifyUsecase.SendNotify(c, bytes.NewBuffer(payload))
+	replacer := strings.NewReplacer(
+		"${Title}", "Banana Cafe",
+		"${Place}", "Flex Tower, 7-7-4 Midori-ku, Tokyo",
+		"${Time}", "10.00-23.00",
+	)
+	updatedPayload := replacer.Replace(string(payload))
+
+	err = lnc.LineNotifyUsecase.SendNotify(c, bytes.NewBuffer([]byte(updatedPayload)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return

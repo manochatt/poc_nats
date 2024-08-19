@@ -1,6 +1,7 @@
 package nats_utils
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -8,10 +9,16 @@ import (
 	"log"
 	"time"
 
+	"github.com/manochatt/line-noti/domain"
+	line_notify_repository "github.com/manochatt/line-noti/modules/line_notify/repository"
+	line_notify_usecase "github.com/manochatt/line-noti/modules/line_notify/usecase"
+	line_template_repository "github.com/manochatt/line-noti/modules/line_template/repository"
+	line_template_usecase "github.com/manochatt/line-noti/modules/line_template/usecase"
+	"github.com/manochatt/line-noti/mongo"
 	"github.com/nats-io/nats.go"
 )
 
-func Consumer() {
+func Consumer(timeout time.Duration, db mongo.Database) {
 	ctx := context.Background()
 
 	jsCtx, err := InitialNatServer()
@@ -24,6 +31,7 @@ func Consumer() {
 		log.Fatal("Error", err)
 	}
 
+	// Remove consumer before terminate application
 	defer func() {
 		if err := DeleteConsumer(ctx, jsCtx, "demo_group", "demo"); err != nil {
 			log.Fatal("Error", err)
@@ -52,16 +60,39 @@ func Consumer() {
 		}
 	}()
 
+	lr := line_template_repository.NewLineTemplateRepository(db, domain.CollectionLineTemplate)
+	lu := line_template_usecase.NewLineTemplateUsecase(lr, timeout)
+	lnr := line_notify_repository.NewLineNotifyRepository()
+	lnu := line_notify_usecase.NewLineNotifyUsecase(lnr, timeout)
+
 	for msg := range msgCh {
 		fmt.Println("✅", string(msg.Data))
 
-		var messageObj map[string]interface{}
-		err := json.Unmarshal(msg.Data, &messageObj)
+		var notificationData domain.LineMessageDTO
+		err := json.Unmarshal(msg.Data, &notificationData)
 		if err != nil {
-			log.Fatal("Error cannot unmarshal messages:", err)
+			log.Fatal("Error cannot unmarshal dto:", err)
 		}
 
-		if messageObj["Successful"] != true {
+		// Get payload
+		lineTemplates, err := lu.FetchByProjectID(ctx, notificationData.ProjectID)
+		if err != nil {
+			log.Fatal("Cannot fetch by projectID:", err)
+		}
+		payloadData := domain.LineMessage{
+			To:       notificationData.ToID,
+			Messages: lineTemplates[0].Messages,
+		}
+		payload, err := json.Marshal(payloadData)
+		if err != nil {
+			log.Fatal("Cannot marshal line template:", err)
+		}
+
+		// Update and send notification message
+		lnu.UpdateMessage(ctx, &payload, notificationData.MessageValue)
+		err = lnu.SendNotify(ctx, bytes.NewBuffer(payload))
+		if err != nil {
+			fmt.Errorf("Cannot send notification message: %v", err)
 			continue
 		}
 

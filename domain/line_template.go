@@ -10,10 +10,10 @@ const (
 	CollectionLineTemplate = "line_template"
 )
 
-type LineTemplateDTO struct {
-	ID        primitive.ObjectID `bson:"_id" json:"-"`
-	ProjectID primitive.ObjectID `bson:"projectID" json:"projectID"`
-	Messages  string             `bson:"messages" json:"messages"`
+type CreateLineTemplateDTO struct {
+	ID        primitive.ObjectID       `bson:"_id" json:"-"`
+	ProjectID primitive.ObjectID       `bson:"projectID" json:"projectID"`
+	Messages  []map[string]interface{} `bson:"messages" json:"messages"`
 }
 
 type LineTemplate struct {
@@ -22,17 +22,14 @@ type LineTemplate struct {
 	Messages  []map[string]interface{} `bson:"messages"`
 }
 
-type LineMessage struct {
-	ToID     primitive.ObjectID       `json:"toID"`
-	Messages []map[string]interface{} `json:"messages"`
-}
-
 type LineTemplateRepository interface {
 	Create(c context.Context, lineTemplate *LineTemplate) error
 	FetchByID(c context.Context, ID string) ([]LineTemplate, error)
+	FetchByProjectID(c context.Context, projectID string) ([]LineTemplate, error)
 }
 
 type LineTemplateUsecase interface {
 	Create(c context.Context, lineTemplate *LineTemplate) error
 	FetchByID(c context.Context, ID string) ([]LineTemplate, error)
+	FetchByProjectID(c context.Context, projectID string) ([]LineTemplate, error)
 }
