@@ -8,19 +8,19 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
 )
 
 func (lnr *lineNotifyRepository) SendNotify(c context.Context, payload *bytes.Buffer) error {
 	// Create a new HTTP POST request
-	req, err := http.NewRequest("POST", domain.LineNotifyURL, payload)
+	req, err := http.NewRequest("POST", models.LineNotifyURL, payload)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
 	// Set the Content-Type header to application/json
 	req.Header.Set("Content-Type", "application/json")
-	// req.Header.Set("Authorization", "Bearer r5AGBIGYqxNudoJunkfLVZVQzGiZLeqnlgbKzHsHAHThZCDyQvfT/wsYWZxdDrddN8uD5Q1HkvKQknSbzONIXQAKRgGxJXCnomOq5Yvc3OE85L7xg4pgPvdrmZcFAi7yhmAU2MdklOzSfiJxYKEa5gdB04t89/1O/w1cDnyilFU=")
+	req.Header.Set("Authorization", "Bearer r5AGBIGYqxNudoJunkfLVZVQzGiZLeqnlgbKzHsHAHThZCDyQvfT/wsYWZxdDrddN8uD5Q1HkvKQknSbzONIXQAKRgGxJXCnomOq5Yvc3OE85L7xg4pgPvdrmZcFAi7yhmAU2MdklOzSfiJxYKEa5gdB04t89/1O/w1cDnyilFU=")
 
 	// Create an HTTP client with a timeout
 	client := &http.Client{Timeout: 10 * time.Second}

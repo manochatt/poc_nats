@@ -5,22 +5,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
+	"github.com/manochatt/line-noti/domain/requests"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (lc *LineTemplateController) Create(c *gin.Context) {
-	var lineTemplateDTO domain.CreateLineTemplateDTO
+	var lineTemplateRequest requests.CreateLineTemplateRequest
 
-	err := c.ShouldBind(&lineTemplateDTO)
+	err := c.ShouldBind(&lineTemplateRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	lineTemplate := domain.LineTemplate{
+	lineTemplate := models.LineTemplate{
 		ID:        primitive.NewObjectID(),
-		ProjectID: lineTemplateDTO.ProjectID,
-		Messages:  lineTemplateDTO.Messages,
+		ProjectID: lineTemplateRequest.ProjectID,
+		Messages:  lineTemplateRequest.Messages,
 	}
 
 	err = lc.LineTemplateUsecase.Create(c, &lineTemplate)

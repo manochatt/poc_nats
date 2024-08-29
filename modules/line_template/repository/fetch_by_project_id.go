@@ -3,15 +3,15 @@ package repository
 import (
 	"context"
 
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (lr *lineTemplateRepository) FetchByProjectID(c context.Context, projectID string) ([]domain.LineTemplate, error) {
+func (lr *lineTemplateRepository) FetchByProjectID(c context.Context, projectID string) ([]models.LineTemplate, error) {
 	collection := lr.database.Collection(lr.collection)
 
-	var lineTemplates []domain.LineTemplate
+	var lineTemplates []models.LineTemplate
 
 	objId, err := primitive.ObjectIDFromHex(projectID)
 	if err != nil {
@@ -25,7 +25,7 @@ func (lr *lineTemplateRepository) FetchByProjectID(c context.Context, projectID 
 
 	err = cursor.All(c, &lineTemplates)
 	if lineTemplates == nil {
-		return []domain.LineTemplate{}, err
+		return []models.LineTemplate{}, err
 	}
 
 	return lineTemplates, err

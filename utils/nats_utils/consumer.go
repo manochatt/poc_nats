@@ -9,7 +9,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
+	"github.com/manochatt/line-noti/domain/requests"
 	line_notify_repository "github.com/manochatt/line-noti/modules/line_notify/repository"
 	line_notify_usecase "github.com/manochatt/line-noti/modules/line_notify/usecase"
 	line_template_repository "github.com/manochatt/line-noti/modules/line_template/repository"
@@ -60,7 +61,7 @@ func Consumer(timeout time.Duration, db mongo.Database) {
 		}
 	}()
 
-	lr := line_template_repository.NewLineTemplateRepository(db, domain.CollectionLineTemplate)
+	lr := line_template_repository.NewLineTemplateRepository(db, models.CollectionLineTemplate)
 	lu := line_template_usecase.NewLineTemplateUsecase(lr, timeout)
 	lnr := line_notify_repository.NewLineNotifyRepository()
 	lnu := line_notify_usecase.NewLineNotifyUsecase(lnr, timeout)
@@ -68,31 +69,39 @@ func Consumer(timeout time.Duration, db mongo.Database) {
 	for msg := range msgCh {
 		fmt.Println("✅", string(msg.Data))
 
-		var notificationData domain.LineMessageDTO
+		var notificationData requests.LineMessageRequest
 		err := json.Unmarshal(msg.Data, &notificationData)
 		if err != nil {
-			log.Fatal("Error cannot unmarshal dto:", err)
+			fmt.Printf("Error cannot unmarshal dto: %v", err)
+			continue
+		}
+		err = notificationData.Validate()
+		if err != nil {
+			fmt.Printf("Error validation error: %v", err)
+			continue
 		}
 
 		// Get payload
 		lineTemplates, err := lu.FetchByProjectID(ctx, notificationData.ProjectID)
 		if err != nil {
-			log.Fatal("Cannot fetch by projectID:", err)
+			fmt.Printf("Cannot fetch by projectID: %v", err)
+			continue
 		}
-		payloadData := domain.LineMessage{
+		payloadData := models.LineMessage{
 			To:       notificationData.ToID,
 			Messages: lineTemplates[0].Messages,
 		}
 		payload, err := json.Marshal(payloadData)
 		if err != nil {
-			log.Fatal("Cannot marshal line template:", err)
+			fmt.Printf("Cannot marshal line template: %v", err)
+			continue
 		}
 
 		// Update and send notification message
 		lnu.UpdateMessage(ctx, &payload, notificationData.MessageValue)
 		err = lnu.SendNotify(ctx, bytes.NewBuffer(payload))
 		if err != nil {
-			fmt.Errorf("Cannot send notification message: %v", err)
+			fmt.Printf("Cannot send notification message: %v", err)
 			continue
 		}
 

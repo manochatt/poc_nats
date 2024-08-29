@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/bootstrap"
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
 	"github.com/manochatt/line-noti/modules/line_template/controller"
 	"github.com/manochatt/line-noti/modules/line_template/repository"
 	"github.com/manochatt/line-noti/modules/line_template/usecase"
@@ -13,7 +13,7 @@ import (
 )
 
 func NewLineTemplateRouter(env *bootstrap.Env, timeout time.Duration, db mongo.Database, group *gin.RouterGroup) {
-	lr := repository.NewLineTemplateRepository(db, domain.CollectionLineTemplate)
+	lr := repository.NewLineTemplateRepository(db, models.CollectionLineTemplate)
 	lc := &controller.LineTemplateController{
 		LineTemplateUsecase: usecase.NewLineTemplateUsecase(lr, timeout),
 	}
