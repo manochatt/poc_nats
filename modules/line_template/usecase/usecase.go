@@ -3,15 +3,15 @@ package usecase
 import (
 	"time"
 
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
 )
 
 type lineTemplateUsecase struct {
-	lineTemplateRepository domain.LineTemplateRepository
+	lineTemplateRepository models.LineTemplateRepository
 	contextTimeout         time.Duration
 }
 
-func NewLineTemplateUsecase(lineTemplateRepository domain.LineTemplateRepository, timeout time.Duration) domain.LineTemplateUsecase {
+func NewLineTemplateUsecase(lineTemplateRepository models.LineTemplateRepository, timeout time.Duration) models.LineTemplateUsecase {
 	return &lineTemplateUsecase{
 		lineTemplateRepository: lineTemplateRepository,
 		contextTimeout:         timeout,

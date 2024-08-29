@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
 	"github.com/manochatt/line-noti/mongo"
 )
 
@@ -10,7 +10,7 @@ type lineTemplateRepository struct {
 	collection string
 }
 
-func NewLineTemplateRepository(db mongo.Database, collection string) domain.LineTemplateRepository {
+func NewLineTemplateRepository(db mongo.Database, collection string) models.LineTemplateRepository {
 	return &lineTemplateRepository{
 		database:   db,
 		collection: collection,

@@ -1,4 +1,4 @@
-package domain
+package models
 
 import (
 	"context"
@@ -9,12 +9,6 @@ import (
 const (
 	CollectionLineTemplate = "line_template"
 )
-
-type CreateLineTemplateDTO struct {
-	ID        primitive.ObjectID       `bson:"_id" json:"-"`
-	ProjectID primitive.ObjectID       `bson:"projectID" json:"projectID"`
-	Messages  []map[string]interface{} `bson:"messages" json:"messages"`
-}
 
 type LineTemplate struct {
 	ID        primitive.ObjectID       `bson:"_id"`

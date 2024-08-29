@@ -1,31 +1,15 @@
-package domain
+package models
 
 import (
 	"bytes"
 	"context"
+
+	"github.com/manochatt/line-noti/domain/requests"
 )
 
 const (
 	LineNotifyURL = "https://api.line.me/v2/bot/message/push"
 )
-
-type LineNotifyDTO struct {
-	To      string                   `json:"to"`
-	Message []map[string]interface{} `json:"messages"`
-}
-
-type MessageValue struct {
-	Title         string `json:"title"`
-	Place         string `json:"place"`
-	StartDateTime string `json:"startDateTime"`
-	EndDateTime   string `json:"endDateTime"`
-}
-
-type LineMessageDTO struct {
-	ToID         string       `json:"toID"`
-	ProjectID    string       `json:"projectID"`
-	MessageValue MessageValue `json:"messageValue"`
-}
 
 type LineMessage struct {
 	To       string                   `json:"to"`
@@ -34,12 +18,12 @@ type LineMessage struct {
 
 type LineNotifyRepository interface {
 	SendNotify(c context.Context, payload *bytes.Buffer) error
-	UpdateMessage(c context.Context, payload *[]byte, messageValue MessageValue)
+	UpdateMessage(c context.Context, payload *[]byte, messageValue requests.MessageValue)
 }
 
 type LineNotifyUsecase interface {
 	SendNotify(c context.Context, payload *bytes.Buffer) error
-	UpdateMessage(c context.Context, payload *[]byte, messageValue MessageValue)
+	UpdateMessage(c context.Context, payload *[]byte, messageValue requests.MessageValue)
 }
 
 // func validateDatetime(sl validator.StructLevel) {

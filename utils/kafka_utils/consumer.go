@@ -9,7 +9,7 @@ import (
 
 	"github.com/manochatt/line-noti/bootstrap"
 	"github.com/manochatt/line-noti/config"
-	"github.com/manochatt/line-noti/domain"
+	"github.com/manochatt/line-noti/domain/models"
 	"github.com/manochatt/line-noti/mongo"
 	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,7 +28,7 @@ func TopicSubscribe(env *bootstrap.Env, db mongo.Database) {
 		}
 	}()
 
-	lineTemplateCh := make(chan domain.LineTemplate)
+	lineTemplateCh := make(chan models.LineTemplate)
 
 	go ReadMessage(conn, lineTemplateCh)
 	LineTemplateHandler(db, lineTemplateCh)
@@ -37,8 +37,8 @@ func TopicSubscribe(env *bootstrap.Env, db mongo.Database) {
 
 }
 
-func ReadMessage(conn *kafka.Conn, lineTemplateCh chan domain.LineTemplate) {
-	var lineTemplate domain.LineTemplate
+func ReadMessage(conn *kafka.Conn, lineTemplateCh chan models.LineTemplate) {
+	var lineTemplate models.LineTemplate
 	for {
 		message, err := conn.ReadMessage(10e3)
 		if err != nil {
@@ -55,12 +55,12 @@ func ReadMessage(conn *kafka.Conn, lineTemplateCh chan domain.LineTemplate) {
 	}
 }
 
-func LineTemplateHandler(db mongo.Database, lineTemplateCh chan domain.LineTemplate) {
-	collection := db.Collection(domain.CollectionLineTemplate)
+func LineTemplateHandler(db mongo.Database, lineTemplateCh chan models.LineTemplate) {
+	collection := db.Collection(models.CollectionLineTemplate)
 	c := context.Background()
 	for lc := range lineTemplateCh {
 		time.Sleep(time.Millisecond)
-		var lineTemplates []domain.LineTemplate
+		var lineTemplates []models.LineTemplate
 		fmt.Println("========================================================================")
 
 		cursor, err := collection.Find(c, bson.M{"_id": lc.ID})
