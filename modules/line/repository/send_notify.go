@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/manochatt/line-noti/domain/models"
+	line_models "github.com/manochatt/line-noti/domain/line/models"
 )
 
 func (lr *lineRepository) SendNotify(c context.Context, payload *bytes.Buffer) error {
 	// Create a new HTTP POST request
-	req, err := http.NewRequest("POST", models.LineNotifyURL, payload)
+	req, err := http.NewRequest("POST", line_models.LineNotifyURL, payload)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}

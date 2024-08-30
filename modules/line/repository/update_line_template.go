@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 
-	"github.com/manochatt/line-noti/domain/requests"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (lr *lineRepository) UpdateLineTemplate(c context.Context, id string, updateRequest *requests.UpdateLineTemplateRequest) error {
+func (lr *lineRepository) UpdateLineTemplate(c context.Context, id string, updateRequest *line_requests.UpdateLineTemplateRequest) error {
 	collection := lr.database.Collection(lr.collection)
 
 	objId, err := primitive.ObjectIDFromHex(id)
@@ -33,7 +33,7 @@ func (lr *lineRepository) UpdateLineTemplate(c context.Context, id string, updat
 	return nil
 }
 
-func buildUpdateFields(updateRequest *requests.UpdateLineTemplateRequest) bson.M {
+func buildUpdateFields(updateRequest *line_requests.UpdateLineTemplateRequest) bson.M {
 	updateFields := bson.M{}
 
 	if !updateRequest.ProjectID.IsZero() {

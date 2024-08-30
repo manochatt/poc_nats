@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/manochatt/line-noti/domain/requests"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 	"github.com/manochatt/line-noti/utils/nats_utils"
 )
 
@@ -15,10 +15,10 @@ func main() {
 		log.Fatal("Error", err)
 	}
 
-	demo := requests.LineMessageRequest{
+	demo := line_requests.LineMessageRequest{
 		ToID:      "Ub0d85d97a8a3688c45662a2241d313e9",
 		ProjectID: "66b47943bef4dd43c5a1b7e6",
-		MessageValue: requests.MessageValue{
+		MessageValue: line_requests.MessageValue{
 			Title:         "Test Coffee",
 			Place:         "BKK",
 			StartDateTime: "2024-07-17T05:00:00+07:00",

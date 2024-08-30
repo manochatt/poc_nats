@@ -5,13 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/domain"
-	"github.com/manochatt/line-noti/domain/models"
-	"github.com/manochatt/line-noti/domain/requests"
+	line_models "github.com/manochatt/line-noti/domain/line/models"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (lc *LineController) CreateLineTemplate(c *gin.Context) {
-	var createLineTemplateRequest requests.CreateLineTemplateRequest
+	var createLineTemplateRequest line_requests.CreateLineTemplateRequest
 
 	err := c.ShouldBind(&createLineTemplateRequest)
 	if err != nil {
@@ -19,7 +19,7 @@ func (lc *LineController) CreateLineTemplate(c *gin.Context) {
 		return
 	}
 
-	lineTemplate := models.LineTemplate{
+	lineTemplate := line_models.LineTemplate{
 		ID:        primitive.NewObjectID(),
 		ProjectID: createLineTemplateRequest.ProjectID,
 		Messages:  createLineTemplateRequest.Messages,

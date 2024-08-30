@@ -9,11 +9,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/domain"
-	"github.com/manochatt/line-noti/domain/requests"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 )
 
 func (lc *LineController) SendDirectNotify(c *gin.Context) {
-	var lineNotifyDTO requests.LineNotifyRequest
+	var lineNotifyDTO line_requests.LineNotifyRequest
 
 	err := c.ShouldBind(&lineNotifyDTO)
 	if err != nil {
