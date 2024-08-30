@@ -8,8 +8,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/manochatt/line-noti/domain/models"
-	"github.com/manochatt/line-noti/domain/requests"
+	line_models "github.com/manochatt/line-noti/domain/line/models"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 	"github.com/manochatt/line-noti/modules/line/repository"
 	"github.com/manochatt/line-noti/modules/line/usecase"
 	"github.com/manochatt/line-noti/mongo"
@@ -58,13 +58,13 @@ func Consumer(timeout time.Duration, db mongo.Database) {
 		}
 	}()
 
-	lr := repository.NewLineRepository(db, models.CollectionLineTemplate)
+	lr := repository.NewLineRepository(db, line_models.CollectionLineTemplate)
 	lu := usecase.NewLineUsecase(lr, timeout)
 
 	for msg := range msgCh {
 		fmt.Println("✅", string(msg.Data))
 
-		var notificationData requests.LineMessageRequest
+		var notificationData line_requests.LineMessageRequest
 		err := json.Unmarshal(msg.Data, &notificationData)
 		if err != nil {
 			fmt.Printf("Error cannot unmarshal dto: %v", err)

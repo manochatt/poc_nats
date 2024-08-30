@@ -5,12 +5,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/manochatt/line-noti/domain"
-	"github.com/manochatt/line-noti/domain/requests"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 )
 
 func (lc *LineController) UpdateLineTemplate(c *gin.Context) {
 	id := c.Param("line-template-id")
-	var updateLineTemplateRequest requests.UpdateLineTemplateRequest
+	var updateLineTemplateRequest line_requests.UpdateLineTemplateRequest
 
 	err := c.ShouldBind(&updateLineTemplateRequest)
 	if err != nil {

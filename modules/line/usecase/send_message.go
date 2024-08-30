@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/manochatt/line-noti/domain/models"
-	"github.com/manochatt/line-noti/domain/requests"
+	line_models "github.com/manochatt/line-noti/domain/line/models"
+	line_requests "github.com/manochatt/line-noti/domain/line/requests"
 )
 
-func (lu *lineUsecase) SendMessage(c context.Context, lineMessageRequest requests.LineMessageRequest) error {
+func (lu *lineUsecase) SendMessage(c context.Context, lineMessageRequest line_requests.LineMessageRequest) error {
 	ctx, cancel := context.WithTimeout(c, lu.contextTimeout)
 	defer cancel()
 
@@ -24,7 +24,7 @@ func (lu *lineUsecase) SendMessage(c context.Context, lineMessageRequest request
 		return errors.New("0 line template found")
 	}
 	fmt.Println(lineTemplates, lineMessageRequest.ProjectID)
-	payloadData := models.LineMessage{
+	payloadData := line_models.LineMessage{
 		To:       lineMessageRequest.ToID,
 		Messages: lineTemplates[0].Messages,
 	}

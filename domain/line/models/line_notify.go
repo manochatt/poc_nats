@@ -1,4 +1,4 @@
-package models
+package line_models
 
 const (
 	LineNotifyURL = "https://api.line.me/v2/bot/message/push"

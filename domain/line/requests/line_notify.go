@@ -1,4 +1,4 @@
-package requests
+package line_requests
 
 import (
 	"time"
