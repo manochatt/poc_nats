@@ -16,5 +16,5 @@ func (lc *LineController) FindLineTemplateById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, lineTemplates)
+	c.JSON(http.StatusOK, domain.OkApiResponse(&lineTemplates, "", nil))
 }

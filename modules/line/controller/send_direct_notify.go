@@ -39,7 +39,5 @@ func (lc *LineController) SendDirectNotify(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, domain.SuccessResponse{
-		Message: "Line Notify send successfully",
-	})
+	c.JSON(http.StatusOK, domain.OkApiResponse[any](nil, "Line Notify send successfully", nil))
 }

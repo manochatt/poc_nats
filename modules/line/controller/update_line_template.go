@@ -14,7 +14,7 @@ func (lc *LineController) UpdateLineTemplate(c *gin.Context) {
 
 	err := c.ShouldBind(&updateLineTemplateRequest)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, domain.BadRequestWith(err.Error()))
 		return
 	}
 
@@ -24,7 +24,5 @@ func (lc *LineController) UpdateLineTemplate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, domain.SuccessResponse{
-		Message: "Line Template updated successfully",
-	})
+	c.JSON(http.StatusOK, domain.OkApiResponse[any](nil, "Line Template updated successfully", nil))
 }

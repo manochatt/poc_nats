@@ -31,8 +31,5 @@ func (lc *LineController) CreateLineTemplate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, domain.SuccessResponse{
-		Message: "Line Template created successfully",
-	})
-
+	c.JSON(http.StatusOK, domain.OkApiResponse[any](nil, "Line Template created successfully", nil))
 }
