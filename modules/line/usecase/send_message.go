@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"strings"
 
 	line_models "github.com/manochatt/line-noti/domain/line/models"
@@ -16,17 +14,13 @@ func (lu *lineUsecase) SendMessage(c context.Context, lineMessageRequest line_re
 	ctx, cancel := context.WithTimeout(c, lu.contextTimeout)
 	defer cancel()
 
-	lineTemplates, err := lu.lineRepository.FindLineTemplateByProjectId(ctx, lineMessageRequest.ProjectID)
+	lineTemplate, err := lu.lineRepository.FindLineTemplateByProjectId(ctx, lineMessageRequest.ProjectID)
 	if err != nil {
 		return err
 	}
-	if len(lineTemplates) == 0 {
-		return errors.New("0 line template found")
-	}
-	fmt.Println(lineTemplates, lineMessageRequest.ProjectID)
 	payloadData := line_models.LineMessage{
 		To:       lineMessageRequest.ToID,
-		Messages: lineTemplates[0].Messages,
+		Messages: lineTemplate.Messages,
 	}
 	payload, err := json.Marshal(payloadData)
 	if err != nil {
