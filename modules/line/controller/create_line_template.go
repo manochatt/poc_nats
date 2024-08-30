@@ -10,10 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (lc *LineTemplateController) Create(c *gin.Context) {
-	var lineTemplateRequest requests.CreateLineTemplateRequest
+func (lc *LineController) CreateLineTemplate(c *gin.Context) {
+	var createLineTemplateRequest requests.CreateLineTemplateRequest
 
-	err := c.ShouldBind(&lineTemplateRequest)
+	err := c.ShouldBind(&createLineTemplateRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
 		return
@@ -21,11 +21,11 @@ func (lc *LineTemplateController) Create(c *gin.Context) {
 
 	lineTemplate := models.LineTemplate{
 		ID:        primitive.NewObjectID(),
-		ProjectID: lineTemplateRequest.ProjectID,
-		Messages:  lineTemplateRequest.Messages,
+		ProjectID: createLineTemplateRequest.ProjectID,
+		Messages:  createLineTemplateRequest.Messages,
 	}
 
-	err = lc.LineTemplateUsecase.Create(c, &lineTemplate)
+	err = lc.LineUsecase.CreateLineTemplate(c, &lineTemplate)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return

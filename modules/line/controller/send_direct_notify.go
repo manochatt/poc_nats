@@ -12,7 +12,7 @@ import (
 	"github.com/manochatt/line-noti/domain/requests"
 )
 
-func (lnc *LineNotifyController) SendNotify(c *gin.Context) {
+func (lc *LineController) SendDirectNotify(c *gin.Context) {
 	var lineNotifyDTO requests.LineNotifyRequest
 
 	err := c.ShouldBind(&lineNotifyDTO)
@@ -33,7 +33,7 @@ func (lnc *LineNotifyController) SendNotify(c *gin.Context) {
 	)
 	updatedPayload := replacer.Replace(string(payload))
 
-	err = lnc.LineNotifyUsecase.SendNotify(c, bytes.NewBuffer([]byte(updatedPayload)))
+	err = lc.LineUsecase.SendDirectNotify(c, bytes.NewBuffer([]byte(updatedPayload)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return

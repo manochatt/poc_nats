@@ -8,17 +8,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (lr *lineTemplateRepository) FetchByID(c context.Context, id string) ([]models.LineTemplate, error) {
+func (lr *lineRepository) FindLineTemplateByProjectId(c context.Context, projectID string) ([]models.LineTemplate, error) {
 	collection := lr.database.Collection(lr.collection)
 
 	var lineTemplates []models.LineTemplate
 
-	objId, err := primitive.ObjectIDFromHex(id)
+	objId, err := primitive.ObjectIDFromHex(projectID)
 	if err != nil {
 		return lineTemplates, err
 	}
 
-	cursor, err := collection.Find(c, bson.M{"_id": objId})
+	cursor, err := collection.Find(c, bson.M{"projectID": objId})
 	if err != nil {
 		return nil, err
 	}
@@ -29,4 +29,5 @@ func (lr *lineTemplateRepository) FetchByID(c context.Context, id string) ([]mod
 	}
 
 	return lineTemplates, err
+
 }

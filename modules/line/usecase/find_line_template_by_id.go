@@ -6,8 +6,8 @@ import (
 	"github.com/manochatt/line-noti/domain/models"
 )
 
-func (lu *lineTemplateUsecase) Create(c context.Context, lineTemplate *models.LineTemplate) error {
+func (lu *lineUsecase) FindLineTemplateById(c context.Context, id string) ([]models.LineTemplate, error) {
 	ctx, cancel := context.WithTimeout(c, lu.contextTimeout)
 	defer cancel()
-	return lu.lineTemplateRepository.Create(ctx, lineTemplate)
+	return lu.lineRepository.FindLineTemplateById(ctx, id)
 }
