@@ -1,7 +1,6 @@
 package nats_utils
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -11,10 +10,8 @@ import (
 
 	"github.com/manochatt/line-noti/domain/models"
 	"github.com/manochatt/line-noti/domain/requests"
-	line_notify_repository "github.com/manochatt/line-noti/modules/line_notify/repository"
-	line_notify_usecase "github.com/manochatt/line-noti/modules/line_notify/usecase"
-	line_template_repository "github.com/manochatt/line-noti/modules/line_template/repository"
-	line_template_usecase "github.com/manochatt/line-noti/modules/line_template/usecase"
+	"github.com/manochatt/line-noti/modules/line/repository"
+	"github.com/manochatt/line-noti/modules/line/usecase"
 	"github.com/manochatt/line-noti/mongo"
 	"github.com/nats-io/nats.go"
 )
@@ -61,10 +58,8 @@ func Consumer(timeout time.Duration, db mongo.Database) {
 		}
 	}()
 
-	lr := line_template_repository.NewLineTemplateRepository(db, models.CollectionLineTemplate)
-	lu := line_template_usecase.NewLineTemplateUsecase(lr, timeout)
-	lnr := line_notify_repository.NewLineNotifyRepository()
-	lnu := line_notify_usecase.NewLineNotifyUsecase(lnr, timeout)
+	lr := repository.NewLineRepository(db, models.CollectionLineTemplate)
+	lu := usecase.NewLineUsecase(lr, timeout)
 
 	for msg := range msgCh {
 		fmt.Println("✅", string(msg.Data))
@@ -81,25 +76,7 @@ func Consumer(timeout time.Duration, db mongo.Database) {
 			continue
 		}
 
-		// Get payload
-		lineTemplates, err := lu.FetchByProjectID(ctx, notificationData.ProjectID)
-		if err != nil {
-			fmt.Printf("Cannot fetch by projectID: %v", err)
-			continue
-		}
-		payloadData := models.LineMessage{
-			To:       notificationData.ToID,
-			Messages: lineTemplates[0].Messages,
-		}
-		payload, err := json.Marshal(payloadData)
-		if err != nil {
-			fmt.Printf("Cannot marshal line template: %v", err)
-			continue
-		}
-
-		// Update and send notification message
-		lnu.UpdateMessage(ctx, &payload, notificationData.MessageValue)
-		err = lnu.SendNotify(ctx, bytes.NewBuffer(payload))
+		err = lu.SendMessage(ctx, notificationData)
 		if err != nil {
 			fmt.Printf("Cannot send notification message: %v", err)
 			continue

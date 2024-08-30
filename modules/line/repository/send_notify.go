@@ -11,7 +11,7 @@ import (
 	"github.com/manochatt/line-noti/domain/models"
 )
 
-func (lnr *lineNotifyRepository) SendNotify(c context.Context, payload *bytes.Buffer) error {
+func (lr *lineRepository) SendNotify(c context.Context, payload *bytes.Buffer) error {
 	// Create a new HTTP POST request
 	req, err := http.NewRequest("POST", models.LineNotifyURL, payload)
 	if err != nil {
