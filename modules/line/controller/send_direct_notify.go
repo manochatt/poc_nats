@@ -17,7 +17,7 @@ func (lc *LineController) SendDirectNotify(c *gin.Context) {
 
 	err := c.ShouldBind(&lineNotifyDTO)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, domain.BadRequestWith(err.Error()))
 		return
 	}
 
@@ -35,7 +35,7 @@ func (lc *LineController) SendDirectNotify(c *gin.Context) {
 
 	err = lc.LineUsecase.SendDirectNotify(c, bytes.NewBuffer([]byte(updatedPayload)))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.InternalServerErrorWith(err.Error()))
 		return
 	}
 

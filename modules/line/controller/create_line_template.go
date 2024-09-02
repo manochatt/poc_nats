@@ -15,7 +15,7 @@ func (lc *LineController) CreateLineTemplate(c *gin.Context) {
 
 	err := c.ShouldBind(&createLineTemplateRequest)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusBadRequest, domain.BadRequestWith(err.Error()))
 		return
 	}
 
@@ -27,7 +27,7 @@ func (lc *LineController) CreateLineTemplate(c *gin.Context) {
 
 	err = lc.LineUsecase.CreateLineTemplate(c, &lineTemplate)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.InternalServerErrorWith(err.Error()))
 		return
 	}
 

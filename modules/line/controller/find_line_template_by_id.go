@@ -12,7 +12,7 @@ func (lc *LineController) FindLineTemplateById(c *gin.Context) {
 
 	lineTemplates, err := lc.LineUsecase.FindLineTemplateById(c, id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.InternalServerErrorWith(err.Error()))
 		return
 	}
 

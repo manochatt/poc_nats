@@ -45,10 +45,10 @@ func BadRequestWith(message string) *ErrorException {
 	}, http.StatusBadRequest)
 }
 
-func UnAuthorized() *ErrorException {
+func Unauthorized() *ErrorException {
 	return NewErrorException(ResponseDto{
 		Code:    "KS002",
-		Message: "UnAuthorized",
+		Message: "Unauthorized",
 		Success: false,
 	}, http.StatusUnauthorized)
 }
@@ -59,4 +59,36 @@ func Forbidden() *ErrorException {
 		Message: "Forbidden",
 		Success: false,
 	}, http.StatusForbidden)
+}
+
+func ForbiddenWith(message string) *ErrorException {
+	if message == "" {
+		message = "Forbidden"
+	}
+
+	return NewErrorException(ResponseDto{
+		Code:    "KS003",
+		Message: message,
+		Success: false,
+	}, http.StatusForbidden)
+}
+
+func InternalServerError() *ErrorException {
+	return NewErrorException(ResponseDto{
+		Code:    "KS004",
+		Message: "Internal Server Error",
+		Success: false,
+	}, http.StatusInternalServerError)
+}
+
+func InternalServerErrorWith(message string) *ErrorException {
+	if message == "" {
+		message = "Internal Server Error"
+	}
+
+	return NewErrorException(ResponseDto{
+		Code:    "KS004",
+		Message: message,
+		Success: false,
+	}, http.StatusInternalServerError)
 }
