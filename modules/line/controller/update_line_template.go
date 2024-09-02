@@ -20,7 +20,7 @@ func (lc *LineController) UpdateLineTemplate(c *gin.Context) {
 
 	err = lc.LineUsecase.UpdateLineTemplate(c, id, &updateLineTemplateRequest)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
+		c.JSON(http.StatusInternalServerError, domain.InternalServerErrorWith(err.Error()))
 		return
 	}
 
